@@ -7,7 +7,7 @@ from tinygrad.helpers import ImageDType, dtypes, prod, DType, strip_parens
 from dataclasses import dataclass
 
 @dataclass
-class CStyleLanguage():
+class CStyleLanguage:
   size_prefix: str = "int"
   generic_var_prefix: str = ""
   kernel_prefix: str = ""

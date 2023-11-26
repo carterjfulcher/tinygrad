@@ -1,6 +1,6 @@
 from __future__ import annotations
 import os, math, itertools
-from typing import NamedTuple, Optional, List, Tuple, cast, Dict, Union
+from typing import Optional, List, Tuple, cast, Dict, Union 
 from tinygrad.lazy import vars_from_ast
 from tinygrad.ops import LazyOp, FlopCounter, get_lazyop_info, UnaryOps, BinaryOps, ReduceOps, MemBuffer, ConstBuffer, BufferOps, Device, Compiled
 from tinygrad.helpers import dedup, dtypes, colored, ImageDType, DType, ansilen, getenv, prod, DEBUG, round_up
@@ -45,23 +45,23 @@ tensor_cores: Dict[str, List[TensorCore]] = {
   ]
 }
 
-class LocalBuffer(NamedTuple):
+@dataclass
+class LocalBuffer:
   name: str
   size: int
   dtype: DType = dtypes.float32
-  realized: None = None
-  def __str__(self): return f"localbuffer<{self.name}[{self.size}]>"
+  realized: Optional[any] = None
+  def __str__(self) -> str: return f"localbuffer<{self.name}[{self.size}]>"
 
-class LinearizerOptions(NamedTuple):
+@dataclass
+class LinearizerOptions:
   device: str = ""
-  # TODO: make this generic with a list of supported types
   supports_float4: bool = True
   supports_float4_alu: bool = True
   has_local: bool = True
   has_shared: bool = True
-  # NOTE: these two should be in z,y,x(reversed) order for cstyle backends, they are flipped when kernel is rendered
-  global_max: Optional[List[int]] = None
-  local_max: Optional[List[int]] = None
+  global_max: Optional[List[int]] = []
+  local_max: Optional[List[int]] = []
 
 class Kernel:
   def __init__(self, ast:LazyOp, opts:Optional[LinearizerOptions]=None):

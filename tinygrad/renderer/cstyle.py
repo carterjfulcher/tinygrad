@@ -4,8 +4,10 @@ from collections import defaultdict
 from tinygrad.codegen.linearizer import UOps, UOp
 from tinygrad.ops import UnaryOps, BinaryOps, TernaryOps
 from tinygrad.helpers import ImageDType, dtypes, prod, DType, strip_parens
+from dataclasses import dataclass
 
-class CStyleLanguage(NamedTuple):
+@dataclass
+class CStyleLanguage():
   size_prefix: str = "int"
   generic_var_prefix: str = ""
   kernel_prefix: str = ""

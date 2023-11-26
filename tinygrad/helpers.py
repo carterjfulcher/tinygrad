@@ -3,7 +3,8 @@ import os, functools, platform, time, re, contextlib, operator, hashlib, pickle,
 import numpy as np
 from urllib import request
 from tqdm import tqdm
-from typing import Dict, Tuple, Union, List, NamedTuple, Final, ClassVar, Optional, Iterable, Any, TypeVar, TYPE_CHECKING, Callable
+from typing import Dict, Tuple, Union, List, Final, ClassVar, Optional, Iterable, Any, TypeVar, TYPE_CHECKING, Callable
+from dataclasses import dataclass
 if TYPE_CHECKING:  # TODO: remove this and import TypeGuard from typing once minimum python supported version is 3.10
   from typing_extensions import TypeGuard
 
@@ -96,19 +97,18 @@ class Profiling(contextlib.ContextDecorator):
       pstats.Stats(self.pr).strip_dirs().sort_stats(self.sort).print_stats(self.frac)
 
 # **** tinygrad now supports dtypes! *****
-
-# TODO: migrate this from NamedTuple -> dataclass
-class DType(NamedTuple):
-  priority: int  # this determines when things get upcasted
+@dataclass
+class DType:
+  priority: int # this determines when things get upcasted
   itemsize: int
   name: str
-  np: Optional[type]  # TODO: someday this will be removed with the "remove numpy" project
+  np: Optional[type] # TODO: someday this will be removed with the "remove numpy" project
   sz: int = 1
-  def __repr__(self): return f"dtypes.{INVERSE_DTYPES_DICT[self]}" if self.sz == 1 else f"dtypes._{INVERSE_DTYPES_DICT[self.scalar()]}{self.sz}"
-  def vec(self, sz:int):
+  def __repr__(self) -> str: return f"dtypes.{INVERSE_DTYPES_DICT[self]}" if self.sz == 1 else f"dtypes._{INVERSE_DTYPES_DICT[self.scalar()]}{self.sz}"
+  def vec(self, sz: int) -> 'DType':
     assert sz > 1 and self.sz == 1, f"can't vectorize {self} with size {sz}"
-    return DType(self.priority, self.itemsize*sz, self.name+str(sz), None, sz)
-  def scalar(self): return DTYPES_DICT[self.name[:-len(str(self.sz))]] if self.sz > 1 else self
+    return DType(self.priority, self.itemsize * sz, self.name + str(sz), None, sz)
+  def scalar(self) -> 'DType': return DTYPES_DICT[self.name[:-len(str(self.sz))]] if self.sz > 1 else self
 
 # dependent typing?
 class ImageDType(DType):

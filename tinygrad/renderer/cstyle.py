@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, NamedTuple, Tuple, Union, DefaultDict, cast
+from typing import Dict, List, Optional, Tuple, Union, DefaultDict, cast
 import math
 from collections import defaultdict
 from tinygrad.codegen.linearizer import UOps, UOp
